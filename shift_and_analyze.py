@@ -10,14 +10,15 @@ parser.add_argument("midi_path", help="path to midi file")
 
 original_midi_path = sys.argv[1]
 
-# run raw transcription
+# run raw annotation
 os.system(f"python tcn_downbeat_eval.py '{original_midi_path}'")
 
-raw_tcn_path = original_midi_path + "_drums1_mel1_others1_raw.mid")
+# get filename with extension
+filename = os.path.basename(original_midi_path)
 
-example = "./output/tcn_downbeat_unsupervised_v3.0_1024_context_6_tcn/Isn't She Lovely.5.mid_drums1_mel1_others1_raw.mid"
+raw_midi_path = "output/tcn_downbeat_unsupervised_v3.0_1024_context_6_tcn/" + filename + "_drums1_mel1_others1_raw.mid"
 
-pm = pretty_midi.PrettyMIDI(example)
+pm = pretty_midi.PrettyMIDI(raw_midi_path)
 
 # get instrument with name "Layers4"
 downbeat_layer = None
@@ -111,19 +112,23 @@ def crop_pm(pm,start_time,end_time):
 
 new_pm = crop_pm(pm, first_downbeat, pm.get_end_time())
 
+shifted_midi_path = "./output/tcn_downbeat_unsupervised_v3.0_1024_context_6_tcn/" + filename + "_drums1_mel1_others1_raw_shifted.mid"
 # save new pm
-new_pm.write("./output/shifted.mid")
-    
+new_pm.write(shifted_midi_path)
+
+# run annotation on shifted midi
+os.system(f"python tcn_downbeat_eval.py '{shifted_midi_path}'")
+
 
 
 #%% plot piano roll
-import matplotlib.pyplot as plt
-import numpy as np
+# import matplotlib.pyplot as plt
+# import numpy as np
 
-piano_roll = pm.get_piano_roll(fs=100)
+# piano_roll = pm.get_piano_roll(fs=100)
 
-plt.imshow(piano_roll, aspect='auto', cmap='gray_r')
-plt.show()
+# plt.imshow(piano_roll, aspect='auto', cmap='gray_r')
+# plt.show()
 
 
 
