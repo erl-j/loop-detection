@@ -112,6 +112,9 @@ def crop_pm(pm,start_time,end_time):
 
 new_pm = crop_pm(pm, first_downbeat, pm.get_end_time())
 
+# remove instruments with Layers
+new_pm.instruments = [instrument for instrument in new_pm.instruments if "Layers" not in instrument.name]
+
 shifted_midi_path = "./output/tcn_downbeat_unsupervised_v3.0_1024_context_6_tcn/" + filename + "_drums1_mel1_others1_raw_shifted.mid"
 # save new pm
 new_pm.write(shifted_midi_path)
